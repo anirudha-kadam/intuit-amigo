@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 HELP.md
 /target/
 !.mvn/wrapper/maven-wrapper.jar
@@ -30,6 +31,8 @@ bin/
 ### VS Code ###
 .vscode/
 
+=======
+>>>>>>> branch 'master' of https://github.com/anirudha-kadam/intuit-amigo.git
 # Compiled class file
 *.class
 
