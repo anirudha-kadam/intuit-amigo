@@ -9,6 +9,7 @@ A Twitter like application APIs
 	- In memory storage as well as persistance enabled
 	- RDB and AOF modes enabled for fault recovery to consistent state
 	- Redisson java client and in memory grid
+	- Extensive use of Redis data structures viz List, Sorted Set, Hash, Atomic Integer to solve various use cases
 	
 ### Frameworks/Libraries Used
 	- Spring Boot
