@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.ws.rs.BadRequestException;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -77,7 +78,7 @@ public class FeedServiceRESTControllerImpl implements FeedServiceRESTController 
 				})
 				.map(Response::ok)
 				.map(ResponseBuilder::build)
-				.orElse(null);
+				.orElseThrow(() -> new InternalServerErrorException("Feed returned is null"));
 	}
 
 	@Override
@@ -127,7 +128,7 @@ public class FeedServiceRESTControllerImpl implements FeedServiceRESTController 
 				})
 				.map(Response::ok)
 				.map(ResponseBuilder::build)
-				.orElse(null);
+				.orElseThrow(() -> new InternalServerErrorException("Feed returned is null"));
 	}
 
 }

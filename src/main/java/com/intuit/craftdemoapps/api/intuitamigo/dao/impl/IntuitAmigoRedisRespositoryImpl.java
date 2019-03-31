@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.redisson.api.RAtomicLong;
@@ -22,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.intuit.craftdemoapps.api.intuitamigo.dao.IntuitAmigoRepository;
 import com.intuit.craftdemoapps.api.intuitamigo.model.Feed;
 import com.intuit.craftdemoapps.api.intuitamigo.model.Post;
@@ -57,13 +55,12 @@ public class IntuitAmigoRedisRespositoryImpl implements IntuitAmigoRepository {
 	private RAtomicLong postIdSequence;
 
 	@Autowired
-	public IntuitAmigoRedisRespositoryImpl(RedissonClient redissonClient, PasswordEncoder passwordEncoder) {
+	public IntuitAmigoRedisRespositoryImpl(RedissonClient redissonClient, PasswordEncoder passwordEncoder, ExecutorService executorService) {
 		this.redissonClient = redissonClient;
 		this.passwordEncoder = passwordEncoder;
-		userIdSequence = redissonClient.getAtomicLong("userIdSequence");
-		postIdSequence = redissonClient.getAtomicLong("postIdSequence");
-		executorService = Executors.newFixedThreadPool(100,
-				new ThreadFactoryBuilder().setNameFormat("redis-call-thread-").build());
+		this.userIdSequence = redissonClient.getAtomicLong("userIdSequence");
+		this.postIdSequence = redissonClient.getAtomicLong("postIdSequence");
+		this.executorService = executorService;
 	}
 
 	@Override
