@@ -23,8 +23,12 @@ import com.intuit.craftdemoapps.api.intuitamigo.webservice.FeedServiceRESTContro
 @Component
 public class FeedServiceRESTControllerImpl implements FeedServiceRESTController {
 
-	@Autowired
 	private FeedService feedService;
+	
+	@Autowired
+	public FeedServiceRESTControllerImpl(FeedService feedService) {
+		this.feedService = feedService;
+	}
 	
 	@Override
 	public Response deletePost(String postId) {

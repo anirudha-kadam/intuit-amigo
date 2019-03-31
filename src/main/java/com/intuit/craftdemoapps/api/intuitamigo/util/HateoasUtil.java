@@ -8,6 +8,10 @@ import com.intuit.craftdemoapps.api.intuitamigo.model.Link;
 
 public final class HateoasUtil {
 
+	private HateoasUtil() {
+		
+	}
+	
 	private static final String BASE_PATH_PROFILES = "/api/v1/profiles";
 
 	private static final String BASE_PATH_FEED = "/api/v1/feed";

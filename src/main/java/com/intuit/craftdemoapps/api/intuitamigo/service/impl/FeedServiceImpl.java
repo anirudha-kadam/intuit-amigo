@@ -13,9 +13,12 @@ import com.intuit.craftdemoapps.api.intuitamigo.util.UserSessionUtil;
 @Component
 public class FeedServiceImpl implements FeedService {
 
-	@Autowired
 	private IntuitAmigoRepository repository;
 
+	@Autowired
+	public FeedServiceImpl(IntuitAmigoRepository repository) {
+		this.repository = repository;
+	}
 	@Override
 	public Post createPost(Post post) {
 		return repository.createPost(UserSessionUtil.getUsername(), post);

@@ -17,10 +17,13 @@ import com.intuit.craftdemoapps.api.intuitamigo.util.UserSessionUtil;
 
 @Component
 public class ProfileServiceImpl implements ProfileService, UserDetailsService {
-
-	@Autowired
+	
 	private IntuitAmigoRepository repository;
 	
+	@Autowired
+	public ProfileServiceImpl(IntuitAmigoRepository repository) {
+		this.repository = repository;
+	}
 	@Override
 	public User createProfile(User user) {
 		

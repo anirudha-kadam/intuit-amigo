@@ -5,8 +5,12 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public class UserSessionUtil {
+public final class UserSessionUtil {
 
+	private UserSessionUtil() {
+		
+	}
+	
 	public static String getUsername() {
 		SecurityContext secureContext = SecurityContextHolder.getContext();
 		Authentication auth = secureContext.getAuthentication();
