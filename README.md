@@ -16,7 +16,7 @@ A Twitter like application APIs
 	- Spring Security (Basic Auth Login)
 	- Spring Session Data Redis (Session are stored in redis)
 	- Apache CXF (JAX-RS Implementation)
-	- Spring Cloud Config Server (Externalize properties to github)
+	- Spring Cloud Config Server (Externalize properties to github and change properties with ZDD)
 	- Swagger (Document in code)
 	- Lombok (No boilerplate please)
 	
