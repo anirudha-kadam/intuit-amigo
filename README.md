@@ -12,16 +12,17 @@ A Twitter like application APIs
 	
 ### Frameworks/Libraries Used
 	- Spring Boot
-	- Spring Security
-	- Spring Session
-	- Apache CXF
-	- Spring Cloud Config Server
-	- Swagger
-	- Lombok
+	- Spring Web
+	- Spring Security (Basic Auth Login)
+	- Spring Session Data Redis (Session are stored in redis)
+	- Apache CXF (JAX-RS Implementation)
+	- Spring Cloud Config Server (Externalize properties to github)
+	- Swagger (Document in code)
+	- Lombok (No boilerplate please)
 	
 ### Unit Tests
+	- JUnit
 	- Mockito
-	- Junit
 	- Powermock
 
 ### Swagger URL
