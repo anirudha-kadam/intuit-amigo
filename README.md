@@ -25,6 +25,7 @@ A Twitter like application APIs
 	- JUnit
 	- Mockito
 	- Powermock
+	- Jacoco for test coverage
 
 ### Swagger URL
 https://localhost:8080/intuit-amigo/api/api-docs?url=/intuit-amigo/api/swagger.json#/
