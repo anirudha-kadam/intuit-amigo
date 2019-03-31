@@ -17,7 +17,7 @@ A Twitter like application APIs
 	- Spring Security (Basic Auth Login)
 	- Spring Session Data Redis (Sessions are stored in redis)
 	- Apache CXF (JAX-RS Implementation)
-	- Spring Cloud Config Server (Externalize properties to github and change properties with ZDD)
+	- Spring Cloud Config Server (Externalize properties to github and change properties without having to rebuild/deploy)
 	- Swagger (Document in code)
 	- Lombok (No boilerplate please)
 	
@@ -25,6 +25,7 @@ A Twitter like application APIs
 	- JUnit
 	- Mockito
 	- Powermock
+	- Jacoco for test coverage
 
 ### Swagger URL
 https://localhost:8080/intuit-amigo/api/api-docs?url=/intuit-amigo/api/swagger.json#/
