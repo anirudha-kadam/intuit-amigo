@@ -1,6 +1,6 @@
 # intuit-amigo
 
-###Description
+### Description
 A Twitter like application APIs
 
 ### Storage
