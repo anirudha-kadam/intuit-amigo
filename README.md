@@ -15,7 +15,7 @@ A Twitter like application APIs
 	- Spring Boot
 	- Spring Web
 	- Spring Security (Basic Auth Login)
-	- Spring Session Data Redis (Sessions are stored in redis)
+	- Spring Session Data Redis (User sessions are stored in redis makes application instance purely stateless)
 	- Apache CXF (JAX-RS Implementation)
 	- Spring Cloud Config Server (Externalize properties to github and change properties without having to rebuild/deploy)
 	- Swagger (Document in code)
