@@ -4,7 +4,7 @@
 A Twitter like application APIs
 
 ### Storage
-- Distribute Redis Cache
+- Distributed Redis Cache
 	- Currently running in a standalone mode but clustering as well as sharding possible for scaling
 	- In memory storage as well as persistance enabled
 	- RDB and AOF modes enabled for fault recovery to consistent state
