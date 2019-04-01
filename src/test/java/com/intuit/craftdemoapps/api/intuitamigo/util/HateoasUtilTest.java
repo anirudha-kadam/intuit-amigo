@@ -68,7 +68,7 @@ public class HateoasUtilTest {
 	@Test
 	public void testGetPostLink() {
 		String postLink = HateoasUtil.getPostLink("1234").getHref();
-		assertEquals("https://localhost:8080/intuit-amigo/api/v1/feed/1234/view", postLink);
+		assertEquals("https://localhost:8080/intuit-amigo/api/v1/posts/1234", postLink);
 
 	}
 

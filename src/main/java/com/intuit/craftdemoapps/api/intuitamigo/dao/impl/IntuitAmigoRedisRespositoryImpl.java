@@ -93,12 +93,16 @@ public class IntuitAmigoRedisRespositoryImpl implements IntuitAmigoRepository {
 
 		RMap<String, String> userMap = redissonClient.getMap(USERS_PREFIX + userNameMap.get(username));
 
-		User user = new User();
-		user.setId(userMap.get("id"));
-		user.setName(userMap.get("name"));
-		user.setUsername(userMap.get("username"));
-		user.setPassword(userMap.get("password"));
-		user.setMemberSince(new Date(Long.parseLong(userMap.get("memberSince"))));
+		User user = null;
+		
+		if(!userMap.isEmpty()) {
+			user = new User();
+			user.setId(userMap.get("id"));
+			user.setName(userMap.get("name"));
+			user.setUsername(userMap.get("username"));
+			user.setPassword(userMap.get("password"));
+			user.setMemberSince(new Date(Long.parseLong(userMap.get("memberSince"))));
+		}
 		return user;
 	}
 	
@@ -141,13 +145,17 @@ public class IntuitAmigoRedisRespositoryImpl implements IntuitAmigoRepository {
 
 	private RMap<String, String> writePost(Post post, String postId) {
 		RMap<String, String> postMap = redissonClient.getMap(POSTS_PREFIX + postId);
+		
+		if(!postMap.isEmpty()) {
+			postMap.put("text", post.getText());
+			return postMap;
+		}
 		postMap.put("id", post.getId());
 		postMap.put("text", post.getText());
 		postMap.put("author", post.getAuthor());
 		postMap.put("postedAt", String.valueOf(post.getPostedAt().getTime()));
 		return postMap;
 	}
-	
 	
 	@Override
 	public Post updatePost(String postId, Post post) {
@@ -310,16 +318,18 @@ public class IntuitAmigoRedisRespositoryImpl implements IntuitAmigoRepository {
 	@Override
 	public Post getPost(String postId) {
 
-		Post post = new Post();
+		Post post = null;
 
 		RMap<String, String> postMap = redissonClient.getMap(POSTS_PREFIX + postId);
-		post.setId(postMap.get("id"));
-		post.setText(postMap.get("text"));
-		post.setAuthor(postMap.get("author"));
-		post.setPostedAt(new Date(Long.valueOf(postMap.get("postedAt"))));
-
+		
+		if(!postMap.isEmpty()) {
+			post = new Post();
+			post.setId(postMap.get("id"));
+			post.setText(postMap.get("text"));
+			post.setAuthor(postMap.get("author"));
+			post.setPostedAt(new Date(Long.valueOf(postMap.get("postedAt"))));
+		}
 		return post;
-
 	}
 	
 	@Override
