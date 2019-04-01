@@ -14,7 +14,7 @@ public final class UserFixture {
 	public static User getUser() {
 		User user = new User();
 		user.setName("Anirudha");
-		user.setUsername("ani_kadam");
+		user.setUsername("user1");
 		user.setPassword("secret");
 		return user;
 	}

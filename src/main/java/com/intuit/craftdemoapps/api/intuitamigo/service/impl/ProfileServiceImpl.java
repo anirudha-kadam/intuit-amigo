@@ -38,9 +38,9 @@ public class ProfileServiceImpl implements ProfileService, UserDetailsService {
 	}
 
 	@Override
-	public boolean isValidUserName(String username) {
+	public boolean isUserExists(String username) {
 		
-		return !repository.isUserPresent(username);
+		return repository.isUserPresent(username);
 	}
 
 	@Override

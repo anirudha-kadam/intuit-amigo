@@ -8,16 +8,13 @@ import com.intuit.craftdemoapps.api.intuitamigo.model.Link;
 
 public final class HateoasUtil {
 
-	private HateoasUtil() {
-		
-	}
-	
+	private HateoasUtil() {}
+
 	private static final String BASE_PATH_PROFILES = "/api/v1/profiles";
 
 	private static final String BASE_PATH_FEED = "/api/v1/feed";
 
 	public static URI getProfileURI(String username) {
-
 		return ServletUriComponentsBuilder.fromCurrentContextPath().path(BASE_PATH_PROFILES + "/" + username).build()
 				.toUri();
 	}
@@ -55,7 +52,7 @@ public final class HateoasUtil {
 
 	public static Link getPostLink(String postId) {
 		String link = ServletUriComponentsBuilder.fromCurrentContextPath().path(BASE_PATH_FEED).path("/").path(postId)
-				.build().toUri().toString();
+				.path("/view").build().toUri().toString();
 		return new Link(link);
 	}
 

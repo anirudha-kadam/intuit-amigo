@@ -1,5 +1,6 @@
 package com.intuit.craftdemoapps.api.intuitamigo.webservice.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -72,7 +73,7 @@ public class ProfileServiceRESTControllerImpl implements ProfileServiceRESTContr
 			throw new BadRequestException("username, password, name are required fields");
 		}
 
-		if (!profileService.isValidUserName(user.getUsername())) {
+		if (profileService.isUserExists(user.getUsername())) {
 			throw new BadRequestException("User already exists with username " + user.getUsername());
 		}
 
@@ -85,8 +86,13 @@ public class ProfileServiceRESTControllerImpl implements ProfileServiceRESTContr
 	
 	@Override
 	public Response follow(String username) {
+		
 		if(StringUtils.isBlank(username)) {
 			throw new BadRequestException("username must not be empty");
+		}
+		
+		if (!profileService.isUserExists(username)) {
+			throw new NotFoundException("User does not exists with username: " + username);
 		}
 		
 		profileService.follow(username);
@@ -95,8 +101,13 @@ public class ProfileServiceRESTControllerImpl implements ProfileServiceRESTContr
 
 	@Override
 	public Response unfollow(String username) {
+		
 		if(StringUtils.isBlank(username)) {
 			throw new BadRequestException("username must not be empty");
+		}
+		
+		if (!profileService.isUserExists(username)) {
+			throw new NotFoundException("User does not exists with username: " + username);
 		}
 		
 		profileService.unfollow(username);
@@ -110,18 +121,31 @@ public class ProfileServiceRESTControllerImpl implements ProfileServiceRESTContr
 			throw new BadRequestException("username must not be empty");
 		}
 		
+		if (!profileService.isUserExists(username)) {
+			throw new NotFoundException("User does not exists with username: " + username);
+		}
+		
 		return Optional.ofNullable(profileService.getFollowers(username))
 		.map(Response::ok)
 		.map(ResponseBuilder::build)
-		.orElse(null);
+		.orElse(Response.ok(new ArrayList<User>(0)).build());
 	}
 
 	@Override
 	public Response getFollowing(String username) {
+		
+		if(StringUtils.isBlank(username)) {
+			throw new BadRequestException("username must not be empty");
+		}
+		
+		if (!profileService.isUserExists(username)) {
+			throw new NotFoundException("User does not exists with username: " + username);
+		}
+		
 		return Optional.ofNullable(profileService.getFollowing(username))
 				.map(Response::ok)
 				.map(ResponseBuilder::build)
-				.orElse(null);
+				.orElse(Response.ok(new ArrayList<User>(0)).build());
 	}
 
 	@Override

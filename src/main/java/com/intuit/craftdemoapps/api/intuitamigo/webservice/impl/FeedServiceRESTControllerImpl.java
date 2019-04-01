@@ -78,7 +78,7 @@ public class FeedServiceRESTControllerImpl implements FeedServiceRESTController 
 				})
 				.map(Response::ok)
 				.map(ResponseBuilder::build)
-				.orElseThrow(() -> new InternalServerErrorException("Feed returned is null"));
+				.orElseThrow(() -> new InternalServerErrorException("Feed returned is null. Something went wrong"));
 	}
 
 	@Override
@@ -95,7 +95,7 @@ public class FeedServiceRESTControllerImpl implements FeedServiceRESTController 
 				})
 				.map(Response::ok)
 				.map(ResponseBuilder::build)
-				.orElse(null);
+				.orElseThrow(() -> new InternalServerErrorException("Could not create Post. Something went wrong"));
 	}
 
 	@Override
@@ -105,10 +105,18 @@ public class FeedServiceRESTControllerImpl implements FeedServiceRESTController 
 			throw new BadRequestException("postId must not be empty");
 		}
 		
+		Map<String, Link> links = new HashMap<>(2);
+		links.put("profile", HateoasUtil.getProfileLink(UserSessionUtil.getUsername()));
+		links.put("self", HateoasUtil.getPostLink(postId));
+		
 		return Optional.ofNullable(feedService.updatePost(postId, post))
+				.map(p -> {
+					p.setLinks(links);
+					return p;
+				})
 				.map(Response::ok)
 				.map(ResponseBuilder::build)
-				.orElse(null);
+				.orElseThrow(() -> new InternalServerErrorException("Could not update Post. Something went wrong"));
 	}
 	
 	@Override
@@ -128,7 +136,7 @@ public class FeedServiceRESTControllerImpl implements FeedServiceRESTController 
 				})
 				.map(Response::ok)
 				.map(ResponseBuilder::build)
-				.orElseThrow(() -> new InternalServerErrorException("Feed returned is null"));
+				.orElseThrow(() -> new InternalServerErrorException("Timeline returned is null. Something went wrong"));
 	}
 
 }

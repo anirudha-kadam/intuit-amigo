@@ -6,7 +6,7 @@ import com.intuit.craftdemoapps.api.intuitamigo.model.User;
 
 public interface ProfileService {
 
-	boolean isValidUserName(String username);
+	boolean isUserExists(String username);
 
 	User createProfile(User user);
 

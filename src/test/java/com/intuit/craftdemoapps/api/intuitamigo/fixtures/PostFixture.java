@@ -14,7 +14,7 @@ public final class PostFixture {
 	
 	public static Post getPost() {
 		Post post = new Post();
-		post.setAuthor("ani_kadam");
+		post.setAuthor("user1");
 		post.setId("1");
 		post.setPostedAt(new Date());
 		post.setText("Awesome");

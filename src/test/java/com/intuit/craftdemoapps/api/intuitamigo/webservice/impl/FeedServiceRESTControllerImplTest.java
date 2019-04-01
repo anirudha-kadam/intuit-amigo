@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -15,7 +14,6 @@ import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,8 +38,6 @@ import com.intuit.craftdemoapps.api.intuitamigo.webservice.FeedServiceRESTContro
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({HateoasUtil.class, UserSessionUtil.class})
 public class FeedServiceRESTControllerImplTest {
-
-	@Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 	
 	@Mock
 	FeedService feedService;
@@ -49,7 +45,7 @@ public class FeedServiceRESTControllerImplTest {
 	FeedServiceRESTController controller;
 	
 	@Before
-	public void setup() {
+	public void setUp() {
 		controller = new FeedServiceRESTControllerImpl(feedService);
 		PowerMockito.mockStatic(HateoasUtil.class);
 		PowerMockito.mockStatic(UserSessionUtil.class);
@@ -85,6 +81,7 @@ public class FeedServiceRESTControllerImplTest {
 		assertEquals(200, res.getStatus());
 		assertEquals(post, res.getEntity());
 		assertNotNull(((Post)(res.getEntity())).getLinks());
+		assertTrue(((Post)(res.getEntity())).getLinks().containsKey("self"));
 		
 		verify(feedService, times(1)).getPost("1");
 		PowerMockito.verifyStatic();
@@ -110,7 +107,9 @@ public class FeedServiceRESTControllerImplTest {
 	public void testGetFeed() {
 		Feed feed = FeedFixture.getFeed();
 		
+		when(UserSessionUtil.getUsername()).thenReturn("user1");
 		when(HateoasUtil.getTimelineLink("user1")).thenReturn(new Link("timeline"));
+		when(UserSessionUtil.getUsername()).thenReturn("user1");
 		when(HateoasUtil.getProfileLink("user1")).thenReturn(new Link("profile"));
 		when(feedService.getFeed(0, 100)).thenReturn(feed);
 		
@@ -126,10 +125,35 @@ public class FeedServiceRESTControllerImplTest {
 		verify(feedService, times(1)).getFeed(0, 100);
 	}
 	
+	
+	@Test
+	public void testGetFeed_Pagination_Query_Params_Not_Provided_Selects_Default_Values() {
+		Feed feed = FeedFixture.getFeed();
+		
+		when(UserSessionUtil.getUsername()).thenReturn("user1");
+		when(HateoasUtil.getTimelineLink("user1")).thenReturn(new Link("timeline"));
+		when(UserSessionUtil.getUsername()).thenReturn("user1");
+		when(HateoasUtil.getProfileLink("user1")).thenReturn(new Link("profile"));
+		when(feedService.getFeed(0, 100)).thenReturn(feed);
+		
+		Response res = controller.getFeed(null, null);
+		
+		assertNotNull(res);
+		assertEquals(200, res.getStatus());
+		assertNotNull(res.getEntity());
+		assertTrue(((Feed)res.getEntity()).getLinks().containsKey("timeline"));
+		assertTrue(((Feed)res.getEntity()).getLinks().containsKey("profile"));
+		assertEquals(feed.getPosts(), ((Feed)res.getEntity()).getPosts());
+		
+		verify(feedService, times(1)).getFeed(0, 100);
+	}
+	
 	@Test(expected = InternalServerErrorException.class)
 	public void testGetFeed_Null_Feed_Throws_Internal_Server_Error_Exception() {
 		
+		when(UserSessionUtil.getUsername()).thenReturn("user1");
 		when(HateoasUtil.getTimelineLink("user1")).thenReturn(new Link("timeline"));
+		when(UserSessionUtil.getUsername()).thenReturn("user1");
 		when(HateoasUtil.getProfileLink("user1")).thenReturn(new Link("profile"));
 		when(feedService.getFeed(0, 100)).thenReturn(null);
 		
@@ -139,22 +163,106 @@ public class FeedServiceRESTControllerImplTest {
 	}
 
 	@Test
-	@Ignore
 	public void testCreatePost() {
-		fail("Not yet implemented");
+		Post post = PostFixture.getPost();
+		
+		when(UserSessionUtil.getUsername()).thenReturn("user1");
+		when(HateoasUtil.getProfileLink("user1")).thenReturn(new Link("profile"));	
+		when(feedService.createPost(post)).thenReturn(post);
+		when(HateoasUtil.getPostLink(post.getId())).thenReturn(new Link("self"));
+		
+		Response res = controller.createPost(post);
+		
+		assertNotNull(res);
+		assertEquals(200, res.getStatus());
+		assertNotNull(res.getEntity());
+		assertEquals(post, (Post)res.getEntity());
+		assertTrue(((Post)res.getEntity()).getLinks().containsKey("self"));
+		assertTrue(((Post)res.getEntity()).getLinks().containsKey("profile"));
+		
+		verify(feedService, times(1)).createPost(post);
+	}
+	
+	@Test(expected = InternalServerErrorException.class)
+	public void testCreatePost_Null_Post_Response_Throws_Internal_Server_Error_Exception() {
+		Post post = PostFixture.getPost();
+		
+		when(UserSessionUtil.getUsername()).thenReturn("user1");
+		when(HateoasUtil.getProfileLink("user1")).thenReturn(new Link("profile"));	
+		when(feedService.createPost(post)).thenReturn(null);
+		when(HateoasUtil.getPostLink(post.getId())).thenReturn(new Link("self"));
+		
+		controller.createPost(post);
+		
+		verify(feedService, times(1)).createPost(post);
+	}
+
+	@Test(expected = InternalServerErrorException.class)
+	public void testUpdatePost_Null_Post_Response_Throws_Internal_Server_Error_Exception() {
+		Post post = PostFixture.getPost();
+		
+		when(UserSessionUtil.getUsername()).thenReturn("user1");
+		when(HateoasUtil.getProfileLink("user1")).thenReturn(new Link("profile"));
+		when(HateoasUtil.getPostLink(post.getId())).thenReturn(new Link("self"));	
+		when(feedService.updatePost(post.getId(), post)).thenReturn(null);
+		
+		controller.updatePost(post.getId(), post);
+		
+		verify(feedService, times(1)).updatePost(post.getId(), post);
+	}
+	
+	@Test(expected = BadRequestException.class)
+	public void testUpdatePost_Empty_PostId_Throws_Bad_Request_Exception() {
+		Post post = PostFixture.getPost();
+		controller.updatePost(null, post);
+	}
+	
+	@Test
+	public void testUpdatePost() {
+		Post post = PostFixture.getPost();
+		
+		when(UserSessionUtil.getUsername()).thenReturn("user1");
+		when(HateoasUtil.getProfileLink("user1")).thenReturn(new Link("profile"));
+		when(HateoasUtil.getPostLink(post.getId())).thenReturn(new Link("self"));	
+		when(feedService.updatePost(post.getId(), post)).thenReturn(post);
+		
+		Response res = controller.updatePost(post.getId(), post);
+		
+		assertNotNull(res);
+		assertEquals(200, res.getStatus());
+		assertNotNull(res.getEntity());
+		assertEquals(post, (Post)res.getEntity());
+		assertTrue(((Post)res.getEntity()).getLinks().containsKey("self"));
+		assertTrue(((Post)res.getEntity()).getLinks().containsKey("profile"));
+		
+		verify(feedService, times(1)).updatePost(post.getId(), post);
 	}
 
 	@Test
-	@Ignore
-	public void testUpdatePost() {
-		fail("Not yet implemented");
+	public void testGetTimeline_Pagination_Query_Params_Not_Provided_Selects_Default_Values() {
+		Timeline timeline = FeedFixture.getTimline();
+		
+		when(HateoasUtil.getSelfLink()).thenReturn(new Link("self"));
+		when(HateoasUtil.getProfileLink("user1")).thenReturn(new Link("profile"));
+		when(feedService.getTimeline("user1", 0, 100)).thenReturn(timeline);
+		
+		Response res = controller.getTimeline("user1", null, null);
+		
+		assertNotNull(res);
+		assertEquals(200, res.getStatus());
+		assertNotNull(res.getEntity());
+		assertTrue(((Timeline)res.getEntity()).getLinks().containsKey("self"));
+		assertTrue(((Timeline)res.getEntity()).getLinks().containsKey("profile"));
+		assertEquals(timeline.getPosts(), ((Timeline)res.getEntity()).getPosts());
+		
+		verify(feedService, times(1)).getTimeline("user1", 0, 100);
 	}
-
+	
 	@Test
 	public void testGetTimeline() {
 		Timeline timeline = FeedFixture.getTimline();
 		
-		when(HateoasUtil.getTimelineLink("user1")).thenReturn(new Link("timeline"));
+		when(HateoasUtil.getSelfLink()).thenReturn(new Link("self"));
 		when(HateoasUtil.getProfileLink("user1")).thenReturn(new Link("profile"));
 		when(feedService.getTimeline("user1", 0, 100)).thenReturn(timeline);
 		
@@ -173,7 +281,7 @@ public class FeedServiceRESTControllerImplTest {
 	@Test(expected = InternalServerErrorException.class)
 	public void testGetTimeline_Null_Timeline_Throws_Internal_Server_Error_Exception() {
 		
-		when(HateoasUtil.getTimelineLink("user1")).thenReturn(new Link("timeline"));
+		when(HateoasUtil.getSelfLink()).thenReturn(new Link("self"));
 		when(HateoasUtil.getProfileLink("user1")).thenReturn(new Link("profile"));
 		when(feedService.getTimeline("user1", 0, 100)).thenReturn(null);
 		
